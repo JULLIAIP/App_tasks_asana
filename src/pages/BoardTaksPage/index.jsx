@@ -12,11 +12,12 @@ export default function BoardTaskPage() {
         'Sexta-feira',
     ]
     const navigate = useNavigate()
+
     return (
         <div className=" flex flex-wrap bg-violet-300 p-3 min-h-screen items-start">
 
-            <button onClick={() => navigate("/")}> 
-            <ArrowLeftOnRectangleIcon className="w-10 text-violet-700" />
+            <button onClick={() => navigate("/")}>
+                <ArrowLeftOnRectangleIcon className="w-10 text-violet-700" />
             </button>
             <InputAdd />
             <div className="flex w-full h-auto">
