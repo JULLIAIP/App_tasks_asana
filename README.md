@@ -4,7 +4,7 @@
 <h1>We use:</h1>
 <li><a href='https://vitejs.dev/'>Vite </a>to generate our project</li>
 <li><a href='https://tailwindui.com/'>Tailwindcss</a> along with postcss and autoprefixer for styling</li>
-<li><a href='https://reactrouter.com/en/main'>React-router-dom v6</a>for navigation between pages</li>
+<li><a href='https://reactrouter.com/en/main'>React-router-dom v6 </a>for navigation between pages</li>
 <li><a href='https://github.com/prettier/eslint-config-prettier/blob/main/.eslintrc.js'>Eslint </a>and prettier for code organization during development</li>
 In addition to using ReactContext and CustomHooks for general functions.
 
