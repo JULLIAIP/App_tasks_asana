@@ -1,16 +1,12 @@
 import CardTask from "../../components/CardTask"
 import InputAdd from "../../components/Input"
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/20/solid'
+import { ArrowLeftOnRectangleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
 import { useNavigate } from "react-router-dom"
+import { useContext } from "react"
+import { ContextGlobal } from "../../global/EstadoGlobal"
 
 export default function BoardTaskPage() {
-    const days = [
-        'Segunda-feira',
-        'Terça-feira',
-        'Quarta-feira',
-        'Quinta-feira',
-        'Sexta-feira',
-    ]
+    const { tasksList, setTaskList } = useContext(ContextGlobal)
     const navigate = useNavigate()
 
     return (
@@ -21,7 +17,11 @@ export default function BoardTaskPage() {
             </button>
             <InputAdd />
             <div className="flex w-full h-auto">
-                {days && days.map((item, i) => <CardTask key={i} name={item} />)}
+
+                {tasksList && tasksList.map((item, i) =>
+                    <CardTask key={i} name={item.day} tasks={item.tasks} />)
+                }
+                <button> <PlusCircleIcon className="w-10 text-violet-700" /></button>
             </div>
         </div>
     )

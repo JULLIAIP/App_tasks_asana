@@ -1,5 +1,5 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function LoginPage() {
@@ -31,6 +31,15 @@ export default function LoginPage() {
         }
 
     }
+
+    useEffect(() => {
+        const auth = localStorage.getItem('remeber')
+        if (auth) {
+            alert("você já está logado")
+            navigate("/board")
+        }
+    }, [])
+
     return (
         <>
             <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -102,7 +111,7 @@ export default function LoginPage() {
                             <div className="text-sm">
 
                                 <button onClick={() => setShowPage(!showPage)} href="#" className="font-medium text-violet-600 hover:text-violet-500">
-                                    {showPage ? 'Ainda não tem conta? Cadastre-se' : 'Já tem conta? Faça login'}
+                                    {showPage ? 'Do you not have account? SingUp' : 'Have account? singIn'}
                                 </button>
                             </div>
                         </div>
