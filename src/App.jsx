@@ -1,15 +1,15 @@
 import { BrowserRouter } from "react-router-dom"
+import { StateGblobal } from "./global/EstadoGlobal"
 import Routing from "./global/Rotas"
-import BoardTaskPage from "./pages/BoardTaksPage"
-import DetailsPage from "./pages/DetailsPage"
-import LoginPage from "./pages/LoginPage"
 
 function App() {
 
 
   return (
     <BrowserRouter>
-      <Routing />
+      <StateGblobal>
+        <Routing />
+      </StateGblobal>
     </BrowserRouter>
   )
 }
