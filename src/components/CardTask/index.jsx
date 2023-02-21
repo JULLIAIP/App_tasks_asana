@@ -8,7 +8,7 @@ const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-7
 
 export default function CardTask({ tasks, name }) {
 
-    const { navigate} = useContext(ContextGlobal)    
+    const { navigate } = useContext(ContextGlobal)
 
     const mudaStatus = (e, item) => {
         //SEM API   
@@ -54,8 +54,8 @@ export default function CardTask({ tasks, name }) {
 
     return (
         <div className=" w-1/5 rounded bg-violet-600 text-white shadow-lg text-center m-2 p-2">
-            <h1 className='flex w-full justify-between items-center'>
-                {name} <PencilIcon className="h-5 w-5 " aria-hidden="true" /></h1>
+            <h1 className='flex w-full justify-center items-center'>
+                {name}</h1>
             <hr />
 
             {tasks.map((task, i) => <div key={i}

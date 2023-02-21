@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useAsanaRequest from "../hooks/useAsanaRequest";
 import { instanceAxios } from "./api";
 
 export const ContextGlobal = React.createContext()
 
 export const StateGblobal = ({ children }) => {
-
+    const navigate = useNavigate()
     const [tasksList, setTaskList] = useState([])
     const [tags, setTags] = useState([''])
-    const navigate = useNavigate()
+    const [response, isLoading] = useAsanaRequest({
+        axiosInstance: instanceAxios,
+        method: 'get',
+        path: '/tasks',
+        param: {
+            params: {
+                assignee: '1202625368326187',
+                workspace: '1202625372568274',
+                opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
+            }
+        },
+        data: {}
+    })
 
-    function groupByDayOfWeek(arr) {
+    //Agrupando as tasks por dia
+    function groupByDayOfWeek() {
         // inicializa um objeto vazio com as chaves correspondentes aos dias da semana
         const daysOfWeek = {
             Sunday: [],
@@ -24,7 +38,7 @@ export const StateGblobal = ({ children }) => {
 
         // itera sobre o array de objetos, agrupando-os pelo dia da semana
 
-        const result = arr.reduce((acc, item) => {
+        const result = response && response.data && response.data.data.reduce((acc, item) => {
 
             const dueOn = item.due_on;
 
@@ -48,20 +62,21 @@ export const StateGblobal = ({ children }) => {
         return setTaskList(daysOfWeekArr);
     }
 
-    const getData = useCallback(() => {
+    //SEM CUSTOM HOOKS
+    // const getData = useCallback(() => {
 
-        const params = {
-            params: {
-                assignee: '1202625368326187',
-                workspace: '1202625372568274',
-                opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
-            }
-        }
-        instanceAxios.get('/tasks', params)
+    //     const params = {
+    //         params: {
+    //             assignee: '1202625368326187',
+    //             workspace: '1202625372568274',
+    //             opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
+    //         }
+    //     }
+    //     instanceAxios.get('/tasks', params)
 
-            .then((sucess) => { groupByDayOfWeek(sucess.data.data) })
-            .catch((erro) => { console.log(erro) })
-    }, [])
+    //         .then((sucess) => { groupByDayOfWeek(sucess.data.data) })
+    //         .catch((erro) => { console.log(erro) })
+    // }, [])
 
     const removeTask = (id) => {
 
@@ -90,10 +105,11 @@ export const StateGblobal = ({ children }) => {
 
     }
 
-
     useEffect(() => {
-        getData()
-    }, [])
+        //previne erro de carregamento 
+        { !isLoading ? groupByDayOfWeek() : null }
+
+    }, [isLoading])
 
     return (
         <ContextGlobal.Provider value={{ tasksList, setTaskList, removeTask, navigate, tags }}>
