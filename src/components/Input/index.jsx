@@ -1,35 +1,62 @@
-import { useContext, useEffect, useState } from "react"
-import uuid from "react-uuid"
-import { ContextGlobal } from "../../global/EstadoGlobal"
+import { useState } from "react"
+
 
 export default function InputAdd() {
-    const { tasksList, setTaskList } = useContext(ContextGlobal)
-
     const [taskName, setTaskName] = useState('')
     const [dayTask, setDayTask] = useState('')
 
-
     function addTask() {
+        //--------SEM API
+        // const updatedDays = tasksList.map(task => {
+        //     if (task.day === dayTask) {
+        //         return {
+        //             ...task,
+        //             tasks: [
+        //                 ...task.tasks,
+        //                 { id: uuid(), name: taskName, status: 'open', 
+        //                 description: '', day: dayTask }
+        //             ]
+        //         };
+        //     }
+        //     return task;
+        // });
+        // setTaskList(updatedDays);
 
-        const updatedDays = tasksList.map(task => {
-            if (task.day === dayTask) {
-                return {
-                    ...task,
-                    tasks: [
-                        ...task.tasks,
-                        { id: uuid(), name: taskName, status: 'open', 
-                        description: '', day: dayTask }
-                    ]
-                };
-            }
-            return task;
-        });
-        setTaskList(updatedDays);
+        //------------COM API
+
+        const options = {
+            method: 'POST',
+            url: `${URL_BASE}/tasks`,
+            headers, 
+            data: {
+                data: {
+                  name:taskName ,
+                  completed: false,
+                  due_on:dayTask,
+                  notes: '', 
+                  assignee: '1202625368326187',
+                  workspace: '1202625372568274'
+                }
+              }
+        };
+
+        axios
+            .request(options)
+            .then(function (response) {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.error(error.response.data);
+            });
+
+
+        //COM CUSTOMHOOK
+
+
+
         setTaskName('')
         setDayTask('')
     }
-
-
 
     return (
         <div className=" flex m-auto mt-4 rounded-md 
@@ -44,14 +71,7 @@ export default function InputAdd() {
                 placeholder="New Taks"
                 onChange={(e) => setTaskName(e.target.value)}
             />
-            <select
-                name="day"
-                value={dayTask}
-                className="border-none rounded sm:text-sm"
-                onChange={(e) => setDayTask(e.target.value)}>
-                {tasksList && tasksList.map((item, i) => 
-                <option key={i}>{item.day}</option>)}
-            </select>
+            <input type={'date'} onChange={(e) => setDayTask(e.target.value)} />
             <button onClick={() => addTask()}
                 className="w-10 text-white rounded-md bg-green-400">Add</button>
         </div>

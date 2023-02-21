@@ -1,13 +1,14 @@
 import CardTask from "../../components/CardTask"
 import InputAdd from "../../components/Input"
 import { ArrowLeftOnRectangleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
-import { useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { ContextGlobal } from "../../global/EstadoGlobal"
 
 export default function BoardTaskPage() {
-    const { tasksList, setTaskList } = useContext(ContextGlobal)
-    const navigate = useNavigate()
+
+    const { tasksList, navigate} = useContext(ContextGlobal)
+   
+
 
     return (
         <div className=" flex flex-wrap bg-violet-300 p-3 min-h-screen items-start">
