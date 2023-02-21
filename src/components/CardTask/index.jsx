@@ -1,16 +1,17 @@
 import { EyeIcon, PencilIcon } from '@heroicons/react/20/solid'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { URL_BASE, headers } from '../../global/api'
+import { useContext } from 'react'
+import { instanceAxios } from '../../global/api'
+import { ContextGlobal } from '../../global/EstadoGlobal'
 
+//style
+const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-700 shadow-inner h-auto p-2 rounded justify-around"
 
 export default function CardTask({ tasks, name }) {
 
-    const navigate = useNavigate()
-    const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-700 shadow-inner h-auto p-2 rounded justify-around"
+    const { navigate} = useContext(ContextGlobal)    
 
     const mudaStatus = (e, item) => {
-
+        //SEM API   
         /* const findDay = tasksList&&tasksList.map((task) => {
   
               if (task.day === item.day) {
@@ -34,15 +35,15 @@ export default function CardTask({ tasks, name }) {
           }
           );*/
 
-        const options = {
-            method: 'PUT',
-            url: `${URL_BASE}/tasks/${item.gid}`,
-            headers, 
-            data: { data: { completed: e } }
+
+        //COM API
+        const data = {
+            data:
+                { completed: e }
         };
 
-        axios
-            .request(options)
+        instanceAxios.put(`/tasks/${item.gid}`, data)
+
             .then(function (response) {
                 console.log(response.data);
             })

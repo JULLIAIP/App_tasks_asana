@@ -1,7 +1,6 @@
-import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { URL_BASE, headers } from "./api";
+import { instanceAxios } from "./api";
 
 export const ContextGlobal = React.createContext()
 
@@ -50,18 +49,16 @@ export const StateGblobal = ({ children }) => {
     }
 
     const getData = useCallback(() => {
-        const buscar = {
-            method: 'GET',
-            url: `${URL_BASE}/tasks`,
+
+        const params = {
             params: {
                 assignee: '1202625368326187',
                 workspace: '1202625372568274',
                 opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
-            },
-            headers
+            }
         }
-        axios
-            .request(buscar)
+        instanceAxios.get('/tasks', params)
+
             .then((sucess) => { groupByDayOfWeek(sucess.data.data) })
             .catch((erro) => { console.log(erro) })
     }, [])
@@ -84,13 +81,8 @@ export const StateGblobal = ({ children }) => {
 
 
         //---------------COM API
-        const delTask = {
-            method: 'DELETE',
-            url: `https://app.asana.com/api/1.0/tasks/${id}`,
-            headers
-        }
-        axios
-            .request(delTask)
+
+        instanceAxios.delete(`/tasks/${id}`)
             .then(() => { alert('Task Removida com sucesso') })
             .catch((erro) => { console.log(erro) })
 

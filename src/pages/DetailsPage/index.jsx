@@ -1,8 +1,7 @@
 import { PencilIcon, TrashIcon, ArrowLeftCircleIcon, CheckIcon } from '@heroicons/react/20/solid'
-import axios from 'axios'
 import { useCallback, useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { URL_BASE, headers } from '../../global/api'
+import {  instanceAxios } from '../../global/api'
 import { ContextGlobal } from '../../global/EstadoGlobal'
 
 //style 
@@ -10,7 +9,7 @@ const styleDescription = 'w-1/2 p-2 border-l-violet-600 border-spacing-1 border-
 const styletag = 'h-1/5 p-2 rounded flex items-center text-white'
 
 export default function DetailsPage() {
-    const { removeTask, navigate} = useContext(ContextGlobal)
+    const { removeTask, navigate } = useContext(ContextGlobal)
     const { id } = useParams()
 
     const [showTask, setShowTask] = useState('')
@@ -18,18 +17,16 @@ export default function DetailsPage() {
     const [newDescription, setNewDescription] = useState("")
 
     const getDetailsTask = useCallback(() => {
-        const buscar = {
-            method: 'GET',
-            url: `${URL_BASE}/tasks/${id}`,
+
+        const params = {
             params: {
                 assignee: '1202625368326187',
                 workspace: '1202625372568274',
                 opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
-            },
-            headers, 
+            }
         }
-        axios
-            .request(buscar)
+        instanceAxios.get(`/tasks/${id}`, params)
+
             .then((sucess) => { setShowTask(sucess.data.data) })
             .catch((erro) => { console.log(erro) })
     }, [])

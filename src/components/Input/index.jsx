@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { instanceAxios } from "../../global/api";
 
 
 export default function InputAdd() {
@@ -24,24 +25,20 @@ export default function InputAdd() {
 
         //------------COM API
 
-        const options = {
-            method: 'POST',
-            url: `${URL_BASE}/tasks`,
-            headers, 
+        const data = {
             data: {
-                data: {
-                  name:taskName ,
-                  completed: false,
-                  due_on:dayTask,
-                  notes: '', 
-                  assignee: '1202625368326187',
-                  workspace: '1202625372568274'
-                }
-              }
-        };
+                name: taskName,
+                completed: false,
+                due_on: dayTask,
+                notes: '',
+                assignee: '1202625368326187',
+                workspace: '1202625372568274'
+            }
+        }
 
-        axios
-            .request(options)
+
+        instanceAxios.post(`/tasks`, data)
+
             .then(function (response) {
                 console.log(response.data);
             })
