@@ -8,7 +8,7 @@ export default function Routing() {
         <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route path="/board" element={<BoardTaskPage />} />
-            <Route path="/details/:day/:id" element={<DetailsPage />} />
+            <Route path="/details/:id" element={<DetailsPage />} />
         </Routes>
     )
 }
