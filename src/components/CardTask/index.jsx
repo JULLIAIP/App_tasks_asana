@@ -1,16 +1,18 @@
-import { EyeIcon, PencilIcon } from '@heroicons/react/20/solid'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { URL_BASE, headers } from '../../global/api'
+import { EyeIcon} from '@heroicons/react/20/solid'
+import { useCallback, useContext } from 'react'
+import { instanceAxios } from '../../global/api'
+import { ContextGlobal } from '../../global/EstadoGlobal'
 
+//style
+const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-700 shadow-inner h-auto p-2 rounded justify-around"
 
 export default function CardTask({ tasks, name }) {
 
-    const navigate = useNavigate()
-    const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-700 shadow-inner h-auto p-2 rounded justify-around"
+    const { navigate, tasksList  } = useContext(ContextGlobal)
 
-    const mudaStatus = (e, item) => {
+    const mudaStatus = useCallback( (e, item) => {
 
+        //SEM API   
         /* const findDay = tasksList&&tasksList.map((task) => {
   
               if (task.day === item.day) {
@@ -34,27 +36,28 @@ export default function CardTask({ tasks, name }) {
           }
           );*/
 
-        const options = {
-            method: 'PUT',
-            url: `${URL_BASE}/tasks/${item.gid}`,
-            headers, 
-            data: { data: { completed: e } }
+        //COM API
+        const data = {
+            data:
+                { completed: e }
         };
 
-        axios
-            .request(options)
+        instanceAxios.put(`/tasks/${item.gid}`, data)
+
             .then(function (response) {
                 console.log(response.data);
+                location.reload(true)
             })
             .catch(function (error) {
                 console.error(error);
             });
-    }
+    }, [tasksList])
+    
 
     return (
-        <div className=" w-1/5 rounded bg-violet-600 text-white shadow-lg text-center m-2 p-2">
-            <h1 className='flex w-full justify-between items-center'>
-                {name} <PencilIcon className="h-5 w-5 " aria-hidden="true" /></h1>
+        <div className="w-100 rounded bg-violet-600 text-white shadow-lg text-center m-2 p-2">
+            <h1 className='flex w-full justify-center items-center'>
+                {name}</h1>
             <hr />
 
             {tasks.map((task, i) => <div key={i}

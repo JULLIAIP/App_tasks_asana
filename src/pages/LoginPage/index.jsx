@@ -1,10 +1,13 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ContextGlobal } from '../../global/EstadoGlobal'
 
 export default function LoginPage() {
-    const navigate = useNavigate()
+
     const [showPage, setShowPage] = useState("Singup")
+    const { navigate, remember, setRemember } = useContext(ContextGlobal)
+
 
     const SingUp = (e) => {
         e.preventDefault()
@@ -12,8 +15,11 @@ export default function LoginPage() {
         localStorage.setItem('name', e.target[1].value)
         localStorage.setItem('email', e.target[2].value)
         localStorage.setItem('password', e.target[3].value)
-        localStorage.setItem('remeber', e.target[4].checked)
         navigate("/board")
+
+        if (remember) {
+            localStorage.setItem('remeber', e.target[4].checked)
+        }
 
     }
 
@@ -32,13 +38,6 @@ export default function LoginPage() {
 
     }
 
-    useEffect(() => {
-        const auth = localStorage.getItem('remeber')
-        if (auth) {
-            alert("você já está logado")
-            navigate("/board")
-        }
-    }, [])
 
     return (
         <>
@@ -102,6 +101,7 @@ export default function LoginPage() {
                                     name="remember-me"
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-violet-600 focus:ring-violet-500"
+                                    onClick={(e) => setRemember(e.target.value)}
                                 />
                                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                     Remember me

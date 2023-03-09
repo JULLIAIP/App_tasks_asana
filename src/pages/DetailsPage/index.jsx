@@ -1,55 +1,39 @@
 import { PencilIcon, TrashIcon, ArrowLeftCircleIcon, CheckIcon } from '@heroicons/react/20/solid'
 import axios from 'axios'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {  useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { URL_BASE, headers } from '../../global/api'
+import { instanceAxios } from '../../global/api'
 import { ContextGlobal } from '../../global/EstadoGlobal'
+import useAsanaRequest from '../../hooks/useAsanaRequest'
 
 //style 
-const styleDescription = 'w-1/2 p-2 border-l-violet-600 border-spacing-1 border-4 rounded-md h-auto'
+const styleDescription = ' flex w-1/2 p-2 border-l-violet-600 border-spacing-1 border-4 rounded-md h-auto'
 const styletag = 'h-1/5 p-2 rounded flex items-center text-white'
 
 export default function DetailsPage() {
-    const { removeTask, navigate} = useContext(ContextGlobal)
+    const { removeTask, navigate } = useContext(ContextGlobal)
     const { id } = useParams()
 
-    const [showTask, setShowTask] = useState('')
     const [edit, setEdit] = useState(false)
     const [newDescription, setNewDescription] = useState("")
 
-    const getDetailsTask = useCallback(() => {
-        const buscar = {
-            method: 'GET',
-            url: `${URL_BASE}/tasks/${id}`,
+    const [response, isLoading] = useAsanaRequest({
+        axiosInstance: instanceAxios,
+        method: 'get',
+        path: `/tasks/${id}`,
+        param: {
             params: {
                 assignee: '1202625368326187',
                 workspace: '1202625372568274',
                 opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
-            },
-            headers, 
-        }
-        axios
-            .request(buscar)
-            .then((sucess) => { setShowTask(sucess.data.data) })
-            .catch((erro) => { console.log(erro) })
-    }, [])
+            }
+        },
+        data: {}
+    })
+    const [showTask, setShowTask] = useState('')
 
     const editDescription = () => {
-
-        // const updatedTaskList = tasksList.map(item => {
-        //     if (item.day === day) {
-        //         const updatedTasks = item.tasks.map(task => {
-        //             if (task.gid === id) {
-        //                 return { ...task, description: newDescription };
-        //             }
-        //             return task;
-        //         });
-        //         return { ...item, tasks: updatedTasks };
-        //     }
-        //     return item;
-        // });
-        // setTaskList(updatedTaskList);
-
+//no use axiosInstance
         const options = {
             method: 'PUT',
             url: `https://app.asana.com/api/1.0/tasks/${id}`,
@@ -64,6 +48,7 @@ export default function DetailsPage() {
             .request(options)
             .then(function (response) {
                 console.log(response.data);
+                location.reload(true)
             })
             .catch(function (error) {
                 console.error(error);
@@ -72,19 +57,12 @@ export default function DetailsPage() {
         setEdit(!edit)
     }
 
-
-
-
     useEffect(() => {
-        // const filterDay = tasksList.find(item => item.day === day);
-        // if (filterDay) {
-        //     const findTask = filterDay.tasks.find(task => task.id === id);
-        //     if (findTask) {
-        //         setShowTask(findTask);
-        //     }
-        // }
-        getDetailsTask()
-    }, [])
+        if (!isLoading) {
+            setShowTask(response.data.data)
+        }
+    }, [isLoading])
+
 
     return (
         <div className='w-full min-h-screen flex flex-col justify-center items-center bg-violet-300'>
@@ -108,8 +86,9 @@ export default function DetailsPage() {
                         `${styleDescription}`
                 }>
                     {edit ?
-                        <textarea className='bg-transparent w-1/2'
+                        <textarea className='bg-transparent w-full h-full text-black'
                             onChange={(e) => setNewDescription(e.target.value)}
+                            value={newDescription}
                         />
                         :
                         <h5>{showTask && showTask.notes ?
@@ -118,7 +97,7 @@ export default function DetailsPage() {
                     }
 
                     {edit ? <button onClick={editDescription}>
-                        <CheckIcon className='w-5' /> </button> : null} </div>
+                        <CheckIcon className='w-5 bg-green-500 h-full' /> </button> : null} </div>
 
                 {/* button action */}
                 <div className='grid'>
