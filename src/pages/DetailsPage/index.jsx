@@ -1,13 +1,13 @@
 import { PencilIcon, TrashIcon, ArrowLeftCircleIcon, CheckIcon } from '@heroicons/react/20/solid'
 import axios from 'axios'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import {  useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { instanceAxios } from '../../global/api'
 import { ContextGlobal } from '../../global/EstadoGlobal'
 import useAsanaRequest from '../../hooks/useAsanaRequest'
 
 //style 
-const styleDescription = 'w-1/2 p-2 border-l-violet-600 border-spacing-1 border-4 rounded-md h-auto'
+const styleDescription = ' flex w-1/2 p-2 border-l-violet-600 border-spacing-1 border-4 rounded-md h-auto'
 const styletag = 'h-1/5 p-2 rounded flex items-center text-white'
 
 export default function DetailsPage() {
@@ -30,11 +30,10 @@ export default function DetailsPage() {
         },
         data: {}
     })
-
     const [showTask, setShowTask] = useState('')
 
     const editDescription = () => {
-
+//no use axiosInstance
         const options = {
             method: 'PUT',
             url: `https://app.asana.com/api/1.0/tasks/${id}`,
@@ -49,6 +48,7 @@ export default function DetailsPage() {
             .request(options)
             .then(function (response) {
                 console.log(response.data);
+                location.reload(true)
             })
             .catch(function (error) {
                 console.error(error);
@@ -86,8 +86,9 @@ export default function DetailsPage() {
                         `${styleDescription}`
                 }>
                     {edit ?
-                        <textarea className='bg-transparent w-1/2'
+                        <textarea className='bg-transparent w-full h-full text-black'
                             onChange={(e) => setNewDescription(e.target.value)}
+                            value={newDescription}
                         />
                         :
                         <h5>{showTask && showTask.notes ?
@@ -96,7 +97,7 @@ export default function DetailsPage() {
                     }
 
                     {edit ? <button onClick={editDescription}>
-                        <CheckIcon className='w-5' /> </button> : null} </div>
+                        <CheckIcon className='w-5 bg-green-500 h-full' /> </button> : null} </div>
 
                 {/* button action */}
                 <div className='grid'>

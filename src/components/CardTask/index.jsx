@@ -1,5 +1,5 @@
-import { EyeIcon, PencilIcon } from '@heroicons/react/20/solid'
-import { useContext } from 'react'
+import { EyeIcon} from '@heroicons/react/20/solid'
+import { useCallback, useContext } from 'react'
 import { instanceAxios } from '../../global/api'
 import { ContextGlobal } from '../../global/EstadoGlobal'
 
@@ -8,9 +8,10 @@ const styleCard = "flex w-full text-black items-center gap-2 mt-3 shadow-slate-7
 
 export default function CardTask({ tasks, name }) {
 
-    const { navigate } = useContext(ContextGlobal)
+    const { navigate, tasksList  } = useContext(ContextGlobal)
 
-    const mudaStatus = (e, item) => {
+    const mudaStatus = useCallback( (e, item) => {
+
         //SEM API   
         /* const findDay = tasksList&&tasksList.map((task) => {
   
@@ -35,7 +36,6 @@ export default function CardTask({ tasks, name }) {
           }
           );*/
 
-
         //COM API
         const data = {
             data:
@@ -46,14 +46,16 @@ export default function CardTask({ tasks, name }) {
 
             .then(function (response) {
                 console.log(response.data);
+                location.reload(true)
             })
             .catch(function (error) {
                 console.error(error);
             });
-    }
+    }, [tasksList])
+    
 
     return (
-        <div className=" w-1/5 rounded bg-violet-600 text-white shadow-lg text-center m-2 p-2">
+        <div className="w-100 rounded bg-violet-600 text-white shadow-lg text-center m-2 p-2">
             <h1 className='flex w-full justify-center items-center'>
                 {name}</h1>
             <hr />

@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAsanaRequest from "../hooks/useAsanaRequest";
 import { instanceAxios } from "./api";
@@ -6,9 +6,11 @@ import { instanceAxios } from "./api";
 export const ContextGlobal = React.createContext()
 
 export const StateGblobal = ({ children }) => {
+
     const navigate = useNavigate()
     const [tasksList, setTaskList] = useState([])
-    const [tags, setTags] = useState([''])
+
+    //Use the customHook
     const [response, isLoading] = useAsanaRequest({
         axiosInstance: instanceAxios,
         method: 'get',
@@ -20,11 +22,12 @@ export const StateGblobal = ({ children }) => {
                 opt_fields: 'date,gid,name,completed,notes,due_at, due_on'
             }
         },
-        data: {}
+        data: {},
     })
 
     //Agrupando as tasks por dia
     function groupByDayOfWeek() {
+
         // inicializa um objeto vazio com as chaves correspondentes aos dias da semana
         const daysOfWeek = {
             Sunday: [],
@@ -41,9 +44,8 @@ export const StateGblobal = ({ children }) => {
         const result = response && response.data && response.data.data.reduce((acc, item) => {
 
             const dueOn = item.due_on;
-
             if (dueOn) {
-                const dayOfWeek = new Date(dueOn).toLocaleDateString('en-US', { weekday: "long" });
+                const dayOfWeek = new Date(dueOn).toLocaleDateString('en-US', { weekday: "long", timeZone: 'UTC' });
                 acc[dayOfWeek].push(item);
             }
 
@@ -51,7 +53,7 @@ export const StateGblobal = ({ children }) => {
         }, daysOfWeek);
 
 
-        // converte o objeto em um array de objetos
+        // usando desistruturação para modelar o objeto
         const daysOfWeekArr = Object.entries(result).map(([day, tasks]) => {
             return {
                 day,
@@ -61,7 +63,6 @@ export const StateGblobal = ({ children }) => {
 
         return setTaskList(daysOfWeekArr);
     }
-
     //SEM CUSTOM HOOKS
     // const getData = useCallback(() => {
 
@@ -98,7 +99,7 @@ export const StateGblobal = ({ children }) => {
         //---------------COM API
 
         instanceAxios.delete(`/tasks/${id}`)
-            .then(() => { alert('Task Removida com sucesso') })
+            .then(() => { alert('Task Removida com sucesso') ;  location.reload(true) })
             .catch((erro) => { console.log(erro) })
 
         navigate("/board")
@@ -108,11 +109,10 @@ export const StateGblobal = ({ children }) => {
     useEffect(() => {
         //previne erro de carregamento 
         { !isLoading ? groupByDayOfWeek() : null }
-
     }, [isLoading])
 
     return (
-        <ContextGlobal.Provider value={{ tasksList, setTaskList, removeTask, navigate, tags }}>
+        <ContextGlobal.Provider value={{ tasksList, setTaskList, removeTask, navigate, response, isLoading }}>
             {children}
         </ContextGlobal.Provider>
     )

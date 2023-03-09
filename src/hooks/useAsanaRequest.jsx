@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-
+import {instanceAxios} from '../global/api'
 
 export default function useAsanaRequest(request) {
-    const { axiosInstance, method, path, param, data } = request
+
+    const { method, path, param, data } = request
 
     const [response, setResponse] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -10,19 +11,20 @@ export default function useAsanaRequest(request) {
 
     useEffect(() => {
 
-        const requestAxios = async () => {
-            try {
-                const res = await axiosInstance[method](path, param, data)
-                setResponse(res)
+        //usando o axios instancia
+        instanceAxios [method](path, param, data)
 
-            } catch (error) {
+            //acontece no sucesso
+            .then((res) => setResponse(res))
+
+            //acontece no erro
+            .catch((error) => {
                 console.log(error)
                 setErro(error)
-            }finally{
-                setIsLoading(false)
-            }
-        }
-        requestAxios()
+            })
+
+            //tanto no sucesso quanto no erro
+            .finally(() => setIsLoading(false))
 
     }, [])
 

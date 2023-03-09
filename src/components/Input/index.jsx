@@ -6,6 +6,8 @@ export default function InputAdd() {
     const [taskName, setTaskName] = useState('')
     const [dayTask, setDayTask] = useState('')
 
+    console.log(new Date(dayTask).toLocaleDateString('pt-BR', {weekday:'long', timeZone: 'UTC'}))
+
     function addTask() {
         //--------SEM API
         // const updatedDays = tasksList.map(task => {
@@ -41,6 +43,7 @@ export default function InputAdd() {
 
             .then(function (response) {
                 console.log(response.data);
+                location.reload(true)
             })
             .catch(function (error) {
                 console.error(error.response.data);
